@@ -18,6 +18,11 @@ int earliest_start(const Job *jobs, int n, int *sel);    /* B */
 int shortest_duration(const Job *jobs, int n, int *sel); /* C */
 int fewest_conflicts(const Job *jobs, int n, int *sel);  /* D */
 
+/* Exact solver (Part 2). Same output as a heuristic, but always optimal.
+ * Tries every subset, so it refuses n > EXACT_MAX_N and returns -1. */
+#define EXACT_MAX_N 25
+int exact_solver(const Job *jobs, int n, int *sel);
+
 /* True if a and b overlap. Jobs that only touch (a.f == b.s) don't. */
 static inline int overlaps(const Job *a, const Job *b) {
     return a->s < b->f && b->s < a->f;

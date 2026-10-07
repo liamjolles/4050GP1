@@ -45,6 +45,21 @@ int main(void) {
     check("Sanity 2, Earliest Finish picks B,C    ", earliest_finish, t2, 3,
           (int[]){1, 2}, 2);
 
+    /* Exact solver finds the optimum on both sanity tests */
+    check("Sanity 1, Exact finds B,C,D,E (OPT 4)", exact_solver, t1, 5,
+          (int[]){1, 2, 3, 4}, 4);
+    check("Sanity 2, Exact finds B,C (OPT 2)    ", exact_solver, t2, 3,
+          (int[]){1, 2}, 2);
+
+    /* Exact solver refuses instances that are too large */
+    Job big[EXACT_MAX_N + 1];
+    int big_sel[EXACT_MAX_N + 1];
+    for (int i = 0; i <= EXACT_MAX_N; i++) big[i] = (Job){i, i, i + 1};
+    int big_k = exact_solver(big, EXACT_MAX_N + 1, big_sel);
+    printf("%s  Exact refuses n > %d: got %d\n", big_k == -1 ? "PASS" : "FAIL",
+           EXACT_MAX_N, big_k);
+    if (big_k != -1) failures++;
+
     /* [0,2) [2,4) [4,6) touch but don't overlap, so all 3 fit */
     Job t3[] = {{0, 0, 2}, {1, 2, 4}, {2, 4, 6}};
     check("Half-open, Earliest Finish  ", earliest_finish, t3, 3, (int[]){0, 1, 2}, 3);

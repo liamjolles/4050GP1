@@ -1,4 +1,5 @@
-/* Run all four greedy heuristics on one instance and print their selections.
+/* Run all four greedy heuristics and the exact solver on one instance and
+ * print their selections. The exact solver is skipped for large n.
  *
  * Usage: ./schedule [file]      (reads stdin if no file is given)
  *
@@ -50,6 +51,16 @@ int main(int argc, char **argv) {
     for (size_t h = 0; h < sizeof HEURISTICS / sizeof *HEURISTICS; h++) {
         int k = HEURISTICS[h].run(jobs, n, sel);
         printf("%-20s |H| = %d :", HEURISTICS[h].name, k);
+        for (int i = 0; i < k; i++)
+            printf(" %d[%d,%d)", sel[i], jobs[sel[i]].s, jobs[sel[i]].f);
+        printf("\n");
+    }
+
+    int k = exact_solver(jobs, n, sel);
+    if (k < 0) {
+        printf("Exact solver skipped (n > %d)\n", EXACT_MAX_N);
+    } else {
+        printf("%-20s OPT = %d :", "Exact", k);
         for (int i = 0; i < k; i++)
             printf(" %d[%d,%d)", sel[i], jobs[sel[i]].s, jobs[sel[i]].f);
         printf("\n");
