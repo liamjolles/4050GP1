@@ -1,0 +1,7 @@
+family,tested,matched,match_rate
+sparse,200,200,1.0000
+dense,200,200,1.0000
+varied,200,200,1.0000
+clustered,200,200,1.0000
+ties,200,200,1.0000
+all,1000,1000,1.0000
