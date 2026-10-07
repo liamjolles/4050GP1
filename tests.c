@@ -3,6 +3,7 @@
  * that none of them overlap. */
 
 #include <stdio.h>
+#include "gen.h"
 #include "interval.h"
 
 static int failures = 0;
@@ -85,6 +86,40 @@ int main(void) {
     Job t6[] = {{0, 0, 4}, {1, 4, 5}, {2, 5, 9}};
     check("Shortest Duration fills both sides", shortest_duration, t6, 3,
           (int[]){0, 1, 2}, 3);
+
+    /* Generator: same seed gives the same instance, a different seed a
+     * different one, and every job is valid (s < f, id = position). */
+    for (int fam = 0; fam < FAM_COUNT; fam++) {
+        Job a[12], b[12], c[12];
+        Rng ra = rng_seed(7), rb = rng_seed(7), rc = rng_seed(8);
+        gen_instance(fam, 12, &ra, a);
+        gen_instance(fam, 12, &rb, b);
+        gen_instance(fam, 12, &rc, c);
+        int same = 1, differs = 0;
+        for (int i = 0; i < 12; i++) {
+            same &= a[i].s == b[i].s && a[i].f == b[i].f;
+            differs |= a[i].s != c[i].s || a[i].f != c[i].f;
+        }
+        printf("%s  Generator %-9s same seed -> same jobs\n",
+               same ? "PASS" : "FAIL", family_name(fam));
+        printf("%s  Generator %-9s new seed -> new jobs\n",
+               differs ? "PASS" : "FAIL", family_name(fam));
+        failures += !same + !differs;
+
+        int valid = 1;
+        for (uint64_t seed = 0; seed < 200; seed++) {
+            for (int n = 1; n <= 20; n++) {
+                Job g[20];
+                Rng r = rng_seed(seed);
+                gen_instance(fam, n, &r, g);
+                for (int i = 0; i < n; i++)
+                    valid &= g[i].id == i && g[i].s < g[i].f;
+            }
+        }
+        printf("%s  Generator %-9s jobs have s < f and ids 0..n-1\n",
+               valid ? "PASS" : "FAIL", family_name(fam));
+        failures += !valid;
+    }
 
     printf("\n%s (%d failure%s)\n", failures ? "FAILED" : "ALL PASSED",
            failures, failures == 1 ? "" : "s");
