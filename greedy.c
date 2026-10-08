@@ -16,7 +16,7 @@
 /* ---- sort orders ---- */
 
 /* A: finish, then start, then id */
-static int cmp_finish(const void *x, const void *y) {
+int order_finish(const void *x, const void *y) {
     const Job *a = x, *b = y;
     if (a->f != b->f) return CMP(a->f, b->f);
     if (a->s != b->s) return CMP(a->s, b->s);
@@ -24,7 +24,7 @@ static int cmp_finish(const void *x, const void *y) {
 }
 
 /* B: start, then finish, then id */
-static int cmp_start(const void *x, const void *y) {
+int order_start(const void *x, const void *y) {
     const Job *a = x, *b = y;
     if (a->s != b->s) return CMP(a->s, b->s);
     if (a->f != b->f) return CMP(a->f, b->f);
@@ -32,7 +32,7 @@ static int cmp_start(const void *x, const void *y) {
 }
 
 /* C: duration, then start, then id */
-static int cmp_duration(const void *x, const void *y) {
+int order_duration(const void *x, const void *y) {
     const Job *a = x, *b = y;
     long long da = (long long)a->f - a->s, db = (long long)b->f - b->s;
     if (da != db) return CMP(da, db);
@@ -82,15 +82,15 @@ static int greedy_by_order(const Job *jobs, int n, int *sel,
 }
 
 int earliest_finish(const Job *jobs, int n, int *sel) {
-    return greedy_by_order(jobs, n, sel, cmp_finish);
+    return greedy_by_order(jobs, n, sel, order_finish);
 }
 
 int earliest_start(const Job *jobs, int n, int *sel) {
-    return greedy_by_order(jobs, n, sel, cmp_start);
+    return greedy_by_order(jobs, n, sel, order_start);
 }
 
 int shortest_duration(const Job *jobs, int n, int *sel) {
-    return greedy_by_order(jobs, n, sel, cmp_duration);
+    return greedy_by_order(jobs, n, sel, order_duration);
 }
 
 /* ---- D: fewest conflicts ----
@@ -142,7 +142,7 @@ int fewest_conflicts(const Job *jobs, int n, int *sel) {
                     conf[i]--;
     }
 
-    qsort(chosen, k, sizeof *chosen, cmp_start);
+    qsort(chosen, k, sizeof *chosen, order_start);
     for (int i = 0; i < k; i++) sel[i] = chosen[i].id;
     free(conf);
     free(alive);

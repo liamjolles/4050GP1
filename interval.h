@@ -18,6 +18,12 @@ int earliest_start(const Job *jobs, int n, int *sel);    /* B */
 int shortest_duration(const Job *jobs, int n, int *sel); /* C */
 int fewest_conflicts(const Job *jobs, int n, int *sel);  /* D */
 
+/* The qsort orders A, B and C use (see greedy.c). Exposed so the
+ * runtime experiment can time the sorting step on its own. */
+int order_finish(const void *x, const void *y);
+int order_start(const void *x, const void *y);
+int order_duration(const void *x, const void *y);
+
 /* Exact solver (Part 2). Same output as a heuristic, but always optimal.
  * Tries every subset, so it refuses n > EXACT_MAX_N and returns -1. */
 #define EXACT_MAX_N 25
