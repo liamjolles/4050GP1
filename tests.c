@@ -87,6 +87,17 @@ int main(void) {
     check("Shortest Duration fills both sides", shortest_duration, t6, 3,
           (int[]){0, 1, 2}, 3);
 
+    /* Textbook Fewest Conflicts trap: job 4 [7,9) has the fewest conflicts
+     * (2), but taking it removes jobs 1 and 2 from the optimal chain
+     * 0,1,2,3. Fewest Conflicts then gets one job per side: 3 vs OPT 4. */
+    Job t7[] = {{0, 0, 4},  {1, 4, 8},   {2, 8, 12},  {3, 12, 16},
+                {4, 7, 9},  {5, 3, 5},   {6, 3, 5},   {7, 3, 5},
+                {8, 11, 13}, {9, 11, 13}, {10, 11, 13}};
+    check("Fewest Conflicts trap picks 0,4,8", fewest_conflicts, t7, 11,
+          (int[]){0, 4, 8}, 3);
+    check("Fewest Conflicts trap, Exact OPT 4", exact_solver, t7, 11,
+          (int[]){0, 1, 2, 3}, 4);
+
     /* Generator: same seed gives the same instance, a different seed a
      * different one, and every job is valid (s < f, id = position). */
     for (int fam = 0; fam < FAM_COUNT; fam++) {

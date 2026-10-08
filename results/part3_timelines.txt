@@ -1,0 +1,47 @@
+Part 3 counterexamples (seed 4050)
+Jobs are id[s,f). In the timelines column x is the time step [x, x+1);
+H marks the jobs the heuristic picked, O the jobs an optimal solution picked.
+
+Earliest Start counterexample (from exhaustive search, n = 3)
+  jobs: 0[0,3) 1[1,2) 2[2,3)
+  est : 0[0,3)
+  opt : 1[1,2) 2[2,3)
+  |Greedy(I)| = 1, OPT(I) = 2
+
+  time    0   
+          0123
+  job 0   ###.  H  
+  job 1   .#..    O
+  job 2   ..#.    O
+
+Shortest Duration counterexample (from exhaustive search, n = 3)
+  jobs: 0[0,3) 1[2,4) 2[3,5)
+  sd  : 1[2,4)
+  opt : 0[0,3) 2[3,5)
+  |Greedy(I)| = 1, OPT(I) = 2
+
+  time    0     
+          012345
+  job 0   ###...    O
+  job 1   ..##..  H  
+  job 2   ...##.    O
+
+Fewest Conflicts counterexample (from local search, n = 10)
+  jobs: 0[0,2) 1[0,2) 2[1,3) 3[1,3) 4[2,4) 5[3,5) 6[4,6) 7[5,7) 8[6,7) 9[6,8)
+  fc  : 0[0,2) 5[3,5) 7[5,7)
+  opt : 0[0,2) 4[2,4) 6[4,6) 8[6,7)
+  |Greedy(I)| = 3, OPT(I) = 4
+
+  time    0        
+          012345678
+  job 0   ##.......  H O
+  job 1   ##.......     
+  job 2   .##......     
+  job 3   .##......     
+  job 4   ..##.....    O
+  job 5   ...##....  H  
+  job 6   ....##...    O
+  job 7   .....##..  H  
+  job 8   ......#..    O
+  job 9   ......##.     
+
